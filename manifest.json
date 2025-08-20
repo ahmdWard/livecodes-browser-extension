@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "LiveCodes Test Extension",
+  "version": "0.0.1",
+  "description": "Test context menu for LiveCodes",
+  "permissions": ["contextMenus", "scripting", "activeTab, tabs"],
+  "background": {
+    "service_worker": "./scripts/background.js"
+  }
+}
