@@ -28,12 +28,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 function guessLang(code)  {
-  const t = (code || "").trim();
-  if (t.startsWith("<")) return "html";
+  const trimmedCode = (code || "").trim();
+  if (trimmedCode.startsWith("<")) return "html";
 
-  const head = t.slice(0, 70);
-  const looksCss = /\{[^}]*:[^}]*;/m.test(head);
-  if (looksCss) return "css";
+  const chunk = trimmedCode.slice(0, 70);
+  const isCss = /\{[^}]*:[^}]*;/m.test(chunk);
+  if (isCss) return "css";
 
   return "js";
 }
