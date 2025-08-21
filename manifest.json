@@ -5,6 +5,10 @@
   "description": "Test context menu for LiveCodes",
   "permissions": ["contextMenus", "scripting", "activeTab", "tabs"],
   "background": {
-    "service_worker": "./scripts/background.js"
-  }
+    "service_worker": "scripts/background.js"
+  },
+  "content_scripts": [{
+    "matches":["<all_urls>"],
+    "js":["scripts/scrtipt.js"]
+  }]
 }

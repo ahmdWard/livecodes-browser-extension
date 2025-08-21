@@ -1,13 +1,14 @@
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "Edit in livecodes",
-    title: "Open in LiveCodes",
+    title: "Edit in LiveCodes",
     contexts: ["all"]
   });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId !== "open-livecodes") return;
+  // if (info.menuItemId !== "open-livecodes") return;
 
   const pageUrl = info.pageUrl || tab?.url || "";
   const liveCodeUrl = buildLiveCodesUrl(pageUrl);
