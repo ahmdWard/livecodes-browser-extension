@@ -23,14 +23,35 @@ function addLiveCodeButtons() {
 
   livecodes.createPlayground(container, {
     config: {
-      files: {
-        [`main.${language}`]: { content: code }
-      },
+      languages: [language],
+      markup:
+        language === "html"
+          ? {
+              language: "html",
+              content: code,
+            }
+          : undefined,
+      style:
+        language === "css"
+          ? {
+              language: "css",
+              content: code,
+            }
+          : undefined,
+      script: ["javascript", "js", "typescript", "ts"].includes(language)
+        ? {
+            language:
+              language === "typescript" || language === "ts"
+                ? "typescript"
+                : "javascript",
+            content: code,
+          }
+        : undefined,
       activeFile: `main.${language}`,
     },
     theme: "dark",
     autoRun: true,
-    height: "400px"
+    height: "400px",
   });
       console.log("=== CODE START ===\n", code, "\n=== CODE END ===");
       console.log("Language:", language);
@@ -102,3 +123,4 @@ contentObserver.observe(document.body, {
   `;
   document.documentElement.appendChild(style);
 })();
+

@@ -1,16 +1,20 @@
 ## LiveCodes Extension (Chrome)
 
-A Chrome extension for [LiveCodes](https://livecodes.io/)that lets you instantly open any code you select on a webpage in a LiveCodes playground. Highlight code snippets anywhere, right-click, and launch them directly into LiveCodes to run, edit, and experiment interactively.
+A Chrome extension for [LiveCodes](https://livecodes.io/), Bring any code example to life with a single click. This extension automatically detects code blocks on web pages and adds an “Open in LiveCodes” button below them, letting you launch fully interactive playgrounds without copy-pasting. You can also right click anywhere on a page and choose “Edit in LiveCodes” to send the entire page into  the[LiveCodes](https://livecodes.io/)
 
 ### Features
 
-- Context menu integration – right-click on selected code to open it in LiveCodes.
+- **Context menu integration** – Edit the pages in Lives Code website (suitable with **gitHub**)
 
-- Instant playground – opens a new LiveCodes tab with your code preloaded.
+- **Instant playground** 
+– opens a new LiveCodes tab with your code preloaded, powered by the [LiveCodes SDK](https://github.com/live-codes/livecodes), which handles embedding and configuration under the hood and  for instant testing and exploration
 
-- Basic language detection – detects HTML, CSS, or JS and opens the appropriate editor panel.
+- **Smart language detection**
+ –icks up classes like language-js, language-html, etc.
 
-- Fallback snippet – if no text is selected, opens with a default code snippet.
+ -Falls back to hljs.highlightAuto(code) when Highlight.js is present.
+
+ -Defaults to javascript if unknown.
 
 ### Installation (Development Mode)
 
@@ -26,10 +30,9 @@ cd livecodes-extension
 
 3. Click Load unpacked and select the project folder.
 
-4. You should now see “Open in LiveCodes” in your right-click menu.
+4. You should now see **Edit in LiveCodes** in your right click menu and a **open in live codes** .
 
 ### Usage
 
-- Highlight any code snippet on a webpage.
-- Right-click ----> Open in LiveCodes.
+- Right-click ----> Edit in LiveCodes.
 - A new tab will open at livecodes.io
