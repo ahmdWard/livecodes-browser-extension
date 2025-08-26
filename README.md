@@ -20,7 +20,7 @@ A Chrome extension for [LiveCodes](https://livecodes.io/), Bring any code exampl
 
 Clone this repo:
 ```bash
-git clone https://github.com/ahmdWard/livecodes-extension.git
+git clone https://github.com/ahmdWard/livecodes-browser-extension.git
 cd livecodes-extension
 
 ```
