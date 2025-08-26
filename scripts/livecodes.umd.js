@@ -1,0 +1,652 @@
+"use strict";
+var livecodes = (() => {
+  var Y = Object.create;
+  var D = Object.defineProperty;
+  var F = Object.getOwnPropertyDescriptor;
+  var V = Object.getOwnPropertyNames;
+  var ee = Object.getPrototypeOf,
+    te = Object.prototype.hasOwnProperty;
+  var ne = (d, m) => () => (
+      m || d((m = { exports: {} }).exports, m), m.exports
+    ),
+    oe = (d, m) => {
+      for (var b in m) D(d, b, { get: m[b], enumerable: !0 });
+    },
+    Z = (d, m, b, y) => {
+      if ((m && typeof m == "object") || typeof m == "function")
+        for (let L of V(m))
+          !te.call(d, L) &&
+            L !== b &&
+            D(d, L, {
+              get: () => m[L],
+              enumerable: !(y = F(m, L)) || y.enumerable,
+            });
+      return d;
+    };
+  var se = (d, m, b) => (
+      (b = d != null ? Y(ee(d)) : {}),
+      Z(
+        m || !d || !d.__esModule
+          ? D(b, "default", { value: d, enumerable: !0 })
+          : b,
+        d
+      )
+    ),
+    re = (d) => Z(D({}, "__esModule", { value: !0 }), d);
+  var $ = ne((de, K) => {
+    var ie = (function () {
+      var d = String.fromCharCode,
+        m = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+        b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",
+        y = {};
+      function L(n, e) {
+        if (!y[n]) {
+          y[n] = {};
+          for (var c = 0; c < n.length; c++) y[n][n.charAt(c)] = c;
+        }
+        return y[n][e];
+      }
+      var x = {
+        compressToBase64: function (n) {
+          if (n == null) return "";
+          var e = x._compress(n, 6, function (c) {
+            return m.charAt(c);
+          });
+          switch (e.length % 4) {
+            default:
+            case 0:
+              return e;
+            case 1:
+              return e + "===";
+            case 2:
+              return e + "==";
+            case 3:
+              return e + "=";
+          }
+        },
+        decompressFromBase64: function (n) {
+          return n == null
+            ? ""
+            : n == ""
+            ? null
+            : x._decompress(n.length, 32, function (e) {
+                return L(m, n.charAt(e));
+              });
+        },
+        compressToUTF16: function (n) {
+          return n == null
+            ? ""
+            : x._compress(n, 15, function (e) {
+                return d(e + 32);
+              }) + " ";
+        },
+        decompressFromUTF16: function (n) {
+          return n == null
+            ? ""
+            : n == ""
+            ? null
+            : x._decompress(n.length, 16384, function (e) {
+                return n.charCodeAt(e) - 32;
+              });
+        },
+        compressToUint8Array: function (n) {
+          for (
+            var e = x.compress(n),
+              c = new Uint8Array(e.length * 2),
+              t = 0,
+              r = e.length;
+            t < r;
+            t++
+          ) {
+            var h = e.charCodeAt(t);
+            (c[t * 2] = h >>> 8), (c[t * 2 + 1] = h % 256);
+          }
+          return c;
+        },
+        decompressFromUint8Array: function (n) {
+          if (n == null) return x.decompress(n);
+          for (var e = new Array(n.length / 2), c = 0, t = e.length; c < t; c++)
+            e[c] = n[c * 2] * 256 + n[c * 2 + 1];
+          var r = [];
+          return (
+            e.forEach(function (h) {
+              r.push(d(h));
+            }),
+            x.decompress(r.join(""))
+          );
+        },
+        compressToEncodedURIComponent: function (n) {
+          return n == null
+            ? ""
+            : x._compress(n, 6, function (e) {
+                return b.charAt(e);
+              });
+        },
+        decompressFromEncodedURIComponent: function (n) {
+          return n == null
+            ? ""
+            : n == ""
+            ? null
+            : ((n = n.replace(/ /g, "+")),
+              x._decompress(n.length, 32, function (e) {
+                return L(b, n.charAt(e));
+              }));
+        },
+        compress: function (n) {
+          return x._compress(n, 16, function (e) {
+            return d(e);
+          });
+        },
+        _compress: function (n, e, c) {
+          if (n == null) return "";
+          var t,
+            r,
+            h = {},
+            v = {},
+            w = "",
+            O = "",
+            p = "",
+            E = 2,
+            M = 3,
+            a = 2,
+            f = [],
+            s = 0,
+            o = 0,
+            S;
+          for (S = 0; S < n.length; S += 1)
+            if (
+              ((w = n.charAt(S)),
+              Object.prototype.hasOwnProperty.call(h, w) ||
+                ((h[w] = M++), (v[w] = !0)),
+              (O = p + w),
+              Object.prototype.hasOwnProperty.call(h, O))
+            )
+              p = O;
+            else {
+              if (Object.prototype.hasOwnProperty.call(v, p)) {
+                if (p.charCodeAt(0) < 256) {
+                  for (t = 0; t < a; t++)
+                    (s = s << 1),
+                      o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++;
+                  for (r = p.charCodeAt(0), t = 0; t < 8; t++)
+                    (s = (s << 1) | (r & 1)),
+                      o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                      (r = r >> 1);
+                } else {
+                  for (r = 1, t = 0; t < a; t++)
+                    (s = (s << 1) | r),
+                      o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                      (r = 0);
+                  for (r = p.charCodeAt(0), t = 0; t < 16; t++)
+                    (s = (s << 1) | (r & 1)),
+                      o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                      (r = r >> 1);
+                }
+                E--, E == 0 && ((E = Math.pow(2, a)), a++), delete v[p];
+              } else
+                for (r = h[p], t = 0; t < a; t++)
+                  (s = (s << 1) | (r & 1)),
+                    o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                    (r = r >> 1);
+              E--,
+                E == 0 && ((E = Math.pow(2, a)), a++),
+                (h[O] = M++),
+                (p = String(w));
+            }
+          if (p !== "") {
+            if (Object.prototype.hasOwnProperty.call(v, p)) {
+              if (p.charCodeAt(0) < 256) {
+                for (t = 0; t < a; t++)
+                  (s = s << 1),
+                    o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++;
+                for (r = p.charCodeAt(0), t = 0; t < 8; t++)
+                  (s = (s << 1) | (r & 1)),
+                    o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                    (r = r >> 1);
+              } else {
+                for (r = 1, t = 0; t < a; t++)
+                  (s = (s << 1) | r),
+                    o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                    (r = 0);
+                for (r = p.charCodeAt(0), t = 0; t < 16; t++)
+                  (s = (s << 1) | (r & 1)),
+                    o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                    (r = r >> 1);
+              }
+              E--, E == 0 && ((E = Math.pow(2, a)), a++), delete v[p];
+            } else
+              for (r = h[p], t = 0; t < a; t++)
+                (s = (s << 1) | (r & 1)),
+                  o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+                  (r = r >> 1);
+            E--, E == 0 && ((E = Math.pow(2, a)), a++);
+          }
+          for (r = 2, t = 0; t < a; t++)
+            (s = (s << 1) | (r & 1)),
+              o == e - 1 ? ((o = 0), f.push(c(s)), (s = 0)) : o++,
+              (r = r >> 1);
+          for (;;)
+            if (((s = s << 1), o == e - 1)) {
+              f.push(c(s));
+              break;
+            } else o++;
+          return f.join("");
+        },
+        decompress: function (n) {
+          return n == null
+            ? ""
+            : n == ""
+            ? null
+            : x._decompress(n.length, 32768, function (e) {
+                return n.charCodeAt(e);
+              });
+        },
+        _decompress: function (n, e, c) {
+          var t = [],
+            r,
+            h = 4,
+            v = 4,
+            w = 3,
+            O = "",
+            p = [],
+            E,
+            M,
+            a,
+            f,
+            s,
+            o,
+            S,
+            l = { val: c(0), position: e, index: 1 };
+          for (E = 0; E < 3; E += 1) t[E] = E;
+          for (a = 0, s = Math.pow(2, 2), o = 1; o != s; )
+            (f = l.val & l.position),
+              (l.position >>= 1),
+              l.position == 0 && ((l.position = e), (l.val = c(l.index++))),
+              (a |= (f > 0 ? 1 : 0) * o),
+              (o <<= 1);
+          switch ((r = a)) {
+            case 0:
+              for (a = 0, s = Math.pow(2, 8), o = 1; o != s; )
+                (f = l.val & l.position),
+                  (l.position >>= 1),
+                  l.position == 0 && ((l.position = e), (l.val = c(l.index++))),
+                  (a |= (f > 0 ? 1 : 0) * o),
+                  (o <<= 1);
+              S = d(a);
+              break;
+            case 1:
+              for (a = 0, s = Math.pow(2, 16), o = 1; o != s; )
+                (f = l.val & l.position),
+                  (l.position >>= 1),
+                  l.position == 0 && ((l.position = e), (l.val = c(l.index++))),
+                  (a |= (f > 0 ? 1 : 0) * o),
+                  (o <<= 1);
+              S = d(a);
+              break;
+            case 2:
+              return "";
+          }
+          for (t[3] = S, M = S, p.push(S); ; ) {
+            if (l.index > n) return "";
+            for (a = 0, s = Math.pow(2, w), o = 1; o != s; )
+              (f = l.val & l.position),
+                (l.position >>= 1),
+                l.position == 0 && ((l.position = e), (l.val = c(l.index++))),
+                (a |= (f > 0 ? 1 : 0) * o),
+                (o <<= 1);
+            switch ((S = a)) {
+              case 0:
+                for (a = 0, s = Math.pow(2, 8), o = 1; o != s; )
+                  (f = l.val & l.position),
+                    (l.position >>= 1),
+                    l.position == 0 &&
+                      ((l.position = e), (l.val = c(l.index++))),
+                    (a |= (f > 0 ? 1 : 0) * o),
+                    (o <<= 1);
+                (t[v++] = d(a)), (S = v - 1), h--;
+                break;
+              case 1:
+                for (a = 0, s = Math.pow(2, 16), o = 1; o != s; )
+                  (f = l.val & l.position),
+                    (l.position >>= 1),
+                    l.position == 0 &&
+                      ((l.position = e), (l.val = c(l.index++))),
+                    (a |= (f > 0 ? 1 : 0) * o),
+                    (o <<= 1);
+                (t[v++] = d(a)), (S = v - 1), h--;
+                break;
+              case 2:
+                return p.join("");
+            }
+            if ((h == 0 && ((h = Math.pow(2, w)), w++), t[S])) O = t[S];
+            else if (S === v) O = M + M.charAt(0);
+            else return null;
+            p.push(O),
+              (t[v++] = M + O.charAt(0)),
+              h--,
+              (M = O),
+              h == 0 && ((h = Math.pow(2, w)), w++);
+          }
+        },
+      };
+      return x;
+    })();
+    typeof K != "undefined" && K != null && (K.exports = ie);
+  });
+  var le = {};
+  oe(le, { createPlayground: () => ae, getPlaygroundUrl: () => G });
+  var W = se($());
+  async function ae(d, m = {}) {
+    typeof d == "object" &&
+      !(d instanceof HTMLElement) &&
+      (d.headless || d.view === "headless") &&
+      ((m = d), (d = null));
+    let { config: b = {}, headless: y, loading: L = "lazy", view: x } = m,
+      n = y || x === "headless",
+      e = null,
+      c = null;
+    if (typeof d == "string") e = document.querySelector(d);
+    else if (d instanceof HTMLElement) e = d;
+    else if (!(n && typeof d == "object"))
+      throw new Error("A valid container element is required.");
+    if (!e)
+      if (n)
+        (e = document.createElement("div")), z(e), document.body.appendChild(e);
+      else throw new Error(`Cannot find element: "${d}"`);
+    let t = new URL(G(m)),
+      r = t.origin;
+    t.searchParams.set("embed", "true"),
+      t.searchParams.set("loading", n ? "eager" : L),
+      t.searchParams.set("sdkVersion", "0.11.1"),
+      typeof b == "object" &&
+        Object.keys(b).length > 0 &&
+        t.searchParams.set("config", "sdk");
+    let h = m.params;
+    typeof h == "object" &&
+      Object.keys(h).length > 0 &&
+      JSON.stringify(h).length < 1800 &&
+      Object.keys(h).forEach((i) => {
+        t.searchParams.set(i, encodeURIComponent(String(h[i])));
+      });
+    let v = !1,
+      w = "Cannot call API methods after calling `destroy()`.",
+      p = await new Promise((i) => {
+        var R, U, H, k, T, B, q, J, N;
+        if (!e) return;
+        let g = e.dataset.height || e.style.height;
+        if (g && !n) {
+          let _ = isNaN(Number(g)) ? g : g + "px";
+          e.style.height = _;
+        }
+        e.dataset.defaultStyles !== "false" &&
+          !n &&
+          ((R = e.style).backgroundColor || (R.backgroundColor = "#fff"),
+          (U = e.style).border || (U.border = "1px solid black"),
+          (H = e.style).borderRadius || (H.borderRadius = "8px"),
+          (k = e.style).boxSizing || (k.boxSizing = "border-box"),
+          (T = e.style).padding || (T.padding = "0"),
+          (B = e.style).width || (B.width = "100%"),
+          (q = e.style).height || (q.height = e.style.height || "300px"),
+          (e.style.minHeight = "200px"),
+          (e.style.flexGrow = "1"),
+          (J = e.style).overflow || (J.overflow = "hidden"),
+          (N = e.style).resize || (N.resize = "vertical"));
+        let P = "livecodes",
+          A = e.querySelector(`iframe.${P}`),
+          u = A || document.createElement("iframe");
+        u.classList.add(P),
+          u.setAttribute(
+            "allow",
+            "accelerometer; camera; encrypted-media; display-capture; geolocation; gyroscope; microphone; midi; clipboard-read; clipboard-write; web-share"
+          ),
+          u.setAttribute("allowtransparency", "true"),
+          u.setAttribute("allowpaymentrequest", "true"),
+          u.setAttribute("allowfullscreen", "true"),
+          u.setAttribute(
+            "sandbox",
+            "allow-same-origin allow-downloads allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-presentation allow-scripts"
+          );
+        let j = L === "eager" ? "eager" : "lazy";
+        u.setAttribute("loading", j),
+          n
+            ? z(u)
+            : ((u.style.height = "100%"),
+              (u.style.minHeight = "200px"),
+              (u.style.width = "100%"),
+              (u.style.margin = "0"),
+              (u.style.border = "0"),
+              (u.style.borderRadius = e.style.borderRadius)),
+          addEventListener("message", function _(C) {
+            var I;
+            C.source !== u.contentWindow ||
+              C.origin !== r ||
+              ((I = C.data) == null ? void 0 : I.type) !== "livecodes-init" ||
+              (removeEventListener("message", _),
+              (c = Number(C.data.payload.appVersion.replace(/^v/, ""))));
+          }),
+          (!c || c < 46) &&
+            addEventListener("message", function _(C) {
+              var I, Q;
+              C.source !== u.contentWindow ||
+                C.origin !== r ||
+                ((I = C.data) == null ? void 0 : I.type) !==
+                  "livecodes-get-config" ||
+                (removeEventListener("message", _),
+                (Q = u.contentWindow) == null ||
+                  Q.postMessage({ type: "livecodes-config", payload: b }, r));
+            }),
+          (u.onload = () => {
+            i(u);
+          }),
+          (u.src = t.href),
+          A || e.appendChild(u);
+      }),
+      E = new Promise((i) => {
+        addEventListener("message", function g(P) {
+          var A;
+          P.source !== p.contentWindow ||
+            P.origin !== r ||
+            ((A = P.data) == null ? void 0 : A.type) !== "livecodes-ready" ||
+            (removeEventListener("message", g), i(), (E.settled = !0));
+        });
+      }),
+      M = () =>
+        v
+          ? Promise.reject(w)
+          : new Promise(async (i) => {
+              var P;
+              E.settled && i();
+              let g = { type: "livecodes-load" };
+              (P = p.contentWindow) == null || P.postMessage(g, r),
+                await E,
+                i();
+            }),
+      a = (i, g) =>
+        new Promise(async (P, A) => {
+          var j;
+          if (v) return A(w);
+          await M();
+          let u = X();
+          addEventListener("message", function R(U) {
+            var H, k;
+            if (
+              !(
+                U.source !== p.contentWindow ||
+                U.origin !== r ||
+                ((H = U.data) == null ? void 0 : H.type) !==
+                  "livecodes-api-response" ||
+                ((k = U.data) == null ? void 0 : k.id) !== u
+              ) &&
+              U.data.method === i
+            ) {
+              removeEventListener("message", R);
+              let T = U.data.payload;
+              T != null && T.error ? A(T.error) : P(T);
+            }
+          }),
+            (j = p.contentWindow) == null ||
+              j.postMessage({ method: i, id: u, args: g }, r);
+        }),
+      f = {},
+      s = ["load", "ready", "code", "console", "tests", "destroy"],
+      o = (i, g) => {
+        var P;
+        if (v) throw new Error(w);
+        return s.includes(i)
+          ? (a("watch", [i]),
+            f[i] || (f[i] = []),
+            (P = f[i]) == null || P.push(g),
+            {
+              remove: () => {
+                var A, u;
+                (f[i] = (A = f[i]) == null ? void 0 : A.filter((j) => j !== g)),
+                  ((u = f[i]) == null ? void 0 : u.length) === 0 &&
+                    a("watch", [i, "unsubscribe"]);
+              },
+            })
+          : { remove: () => {} };
+      },
+      S = (i) =>
+        ({
+          "livecodes-app-loaded": "load",
+          "livecodes-ready": "ready",
+          "livecodes-change": "code",
+          "livecodes-console": "console",
+          "livecodes-test-results": "tests",
+          "livecodes-destroy": "destroy",
+        }[i]);
+    addEventListener("message", async (i) => {
+      var A, u, j, R;
+      let g = S((u = (A = i.data) == null ? void 0 : A.type) != null ? u : "");
+      if (i.source !== p.contentWindow || i.origin !== r || !g || !f[g]) return;
+      let P = (j = i.data) == null ? void 0 : j.payload;
+      (R = f[g]) == null ||
+        R.forEach((U) => {
+          U(P);
+        });
+    });
+    let l = () => {
+      var i;
+      Object.values(f).forEach((g) => {
+        g.length = 0;
+      }),
+        (i = p == null ? void 0 : p.remove) == null || i.call(p),
+        (v = !0);
+    };
+    L === "lazy" &&
+      "IntersectionObserver" in window &&
+      new IntersectionObserver(
+        (g, P) => {
+          g.forEach(async (A) => {
+            A.isIntersecting && (await M(), P.unobserve(e));
+          });
+        },
+        { rootMargin: "150px" }
+      ).observe(e);
+    function z(i) {
+      (i.style.position = "absolute"),
+        (i.style.top = "0"),
+        (i.style.visibility = "hidden"),
+        (i.style.opacity = "0");
+    }
+    let X = () =>
+      (String(Math.random()) + Date.now().toFixed()).replace("0.", "");
+    return {
+      load: () => M(),
+      run: () => a("run"),
+      format: (i) => a("format", [i]),
+      getShareUrl: (i) => a("getShareUrl", [i]),
+      getConfig: (i) => a("getConfig", [i]),
+      setConfig: (i) => a("setConfig", [i]),
+      getCode: () => a("getCode"),
+      show: (i, g) => a("show", [i, g]),
+      runTests: () => a("runTests"),
+      onChange: (i) => o("code", i),
+      watch: o,
+      exec: (i, ...g) => a("exec", [i, ...g]),
+      destroy: () =>
+        E.settled
+          ? a("destroy").then(l)
+          : v
+          ? Promise.reject(w)
+          : (l(), Promise.resolve()),
+    };
+  }
+  function G(d = {}) {
+    let {
+        appUrl: m = "https://livecodes.io",
+        params: b = {},
+        config: y = {},
+        headless: L,
+        import: x,
+        lite: n,
+        view: e,
+        ...c
+      } = d,
+      t;
+    try {
+      t = new URL(m);
+    } catch (v) {
+      throw new Error(`${m} is not a valid URL.`);
+    }
+    let r = new URLSearchParams();
+    Object.entries(c).forEach(([v, w]) => {
+      w !== void 0 && t.searchParams.set(v, String(w));
+    });
+    let h = d.view === "headless" || L;
+    if (
+      (n &&
+        (console.warn(
+          `Deprecation notice: "lite" option is deprecated. Use "config: { mode: 'lite' }" instead.`
+        ),
+        typeof y == "object" && y.mode == null
+          ? (y.mode = "lite")
+          : t.searchParams.set("lite", "true")),
+      e &&
+        (console.warn(
+          'Deprecation notice: The "view" option has been moved to "config.view". For headless mode use "headless: true".'
+        ),
+        typeof y == "object" && y.view == null && e !== "headless"
+          ? (y.view = e)
+          : t.searchParams.set("view", e)),
+      typeof y == "string")
+    )
+      try {
+        new URL(y), t.searchParams.set("config", encodeURIComponent(y));
+      } catch (v) {
+        throw new Error('"config" is not a valid URL or configuration object.');
+      }
+    else
+      y &&
+        typeof y == "object" &&
+        Object.keys(y).length > 0 &&
+        (y.title &&
+          y.title !== "Untitled Project" &&
+          t.searchParams.set("title", y.title),
+        y.description &&
+          y.description.length > 0 &&
+          t.searchParams.set("description", y.description),
+        r.set(
+          "config",
+          "code/" + (0, W.compressToEncodedURIComponent)(JSON.stringify(y))
+        ));
+    if (b && typeof b == "object" && Object.keys(b).length > 0)
+      try {
+        r.set(
+          "params",
+          (0, W.compressToEncodedURIComponent)(JSON.stringify(b))
+        );
+      } catch (v) {
+        Object.keys(b).forEach((w) => {
+          t.searchParams.set(w, encodeURIComponent(String(b[w])));
+        });
+      }
+    return (
+      x && t.searchParams.set("x", encodeURIComponent(x)),
+      h && t.searchParams.set("headless", "true"),
+      (t.hash = r.toString()),
+      t.href
+    );
+  }
+  return re(le);
+})();

@@ -1,3 +1,4 @@
+
 function addLiveCodeButtons() {
   const codeElements = document.querySelectorAll("pre, pre code");
   codeElements.forEach(codeElement => {
@@ -15,6 +16,22 @@ function addLiveCodeButtons() {
       const codeNode = preBlock.querySelector("code") || preBlock;
       const code = codeNode.textContent.trim();
       const language = await detectLanguage(codeNode, preBlock, code);
+
+      const container = document.createElement("div");
+  container.className = "livecodes-container";
+  preBlock.insertAdjacentElement("afterend", container);
+
+  livecodes.createPlayground(container, {
+    config: {
+      files: {
+        [`main.${language}`]: { content: code }
+      },
+      activeFile: `main.${language}`,
+    },
+    theme: "dark",
+    autoRun: true,
+    height: "400px"
+  });
       console.log("=== CODE START ===\n", code, "\n=== CODE END ===");
       console.log("Language:", language);
     });
@@ -65,3 +82,23 @@ contentObserver.observe(document.body, {
   childList: true,
   subtree: true
 });
+
+(() => {
+  const style = document.createElement("style");
+  style.textContent = `
+    .livecode-button {
+      margin: 8px 0 16px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #2a2d3e;
+      background: #141827;
+      color: #e6e8ec; cursor: pointer;
+    }
+    .livecodes-container {
+      margin: 12px 0 20px;
+      min-height: 420px; border-radius: 12px;
+      overflow: hidden; border: 1px solid #23273a;
+    }
+  `;
+  document.documentElement.appendChild(style);
+})();

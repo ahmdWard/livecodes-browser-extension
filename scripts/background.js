@@ -8,7 +8,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  // if (info.menuItemId !== "open-livecodes") return;
+  // if (info.menuItemId !== "Edit-livecodes") return;
 
   const pageUrl = info.pageUrl || tab?.url || "";
   const liveCodeUrl = buildLiveCodesUrl(pageUrl);

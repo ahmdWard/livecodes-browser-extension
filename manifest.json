@@ -2,15 +2,27 @@
   "manifest_version": 3,
   "name": "LiveCodes Test Extension",
   "version": "0.0.1",
+  "action": {
+    "default_icon": {
+      "16": "icons/livecodes-logo.png"
+    },
+    "default_title": "LiveCodes Test Extension"
+  },
   "description": "Test context menu for LiveCodes",
   "permissions": ["contextMenus", "scripting", "activeTab", "tabs"],
   "background": {
     "service_worker": "scripts/background.js"
   },
-  "content_scripts": [{
-    "matches":["<all_urls>"],
-    "js":["scripts/highlight.min.js","scripts/scrtipt.js"],
-    "run_at": "document_idle",
-  "all_frames": true
-  }]
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/highlight.min.js", "scripts/livecodes.umd.js", "scripts/scrtipt.js"],
+      "run_at": "document_idle",
+      "type": "module",
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "icons/livecodes-logo.png"
+  }
 }
